@@ -15,12 +15,12 @@
 - If you are using Proton to play GD, do not use Wine for the Windows version. Use this version instead as it automatically uses the correct path for Proton.
 - Clone the repository and cd into it
 
-`$ git clone https://github.com/xypwn/gd-gamesave-cryptor.git`
+	`$ git clone https://github.com/xypwn/gd-gamesave-cryptor.git`
 
-`$ cd gd-gamesave-cryptor`
+	`$ cd gd-gamesave-cryptor`
 - Build the binary:
 
-`$ make`
+	`$ make`
 - The executable is named `gd_crypt` and can be run with `./gd_crypt`
 #### Building for Windows
 - You will need to install your distro's version of `mingw-w64`
@@ -28,10 +28,10 @@
 	- Install the AUR package `mingw-w64-gcc` on Arch Linux
 - Clone the repository and cd into it
 
-`$ git clone https://github.com/xypwn/gd-gamesave-cryptor.git`
+	`$ git clone https://github.com/xypwn/gd-gamesave-cryptor.git`
 
-`$ cd gd-gamesave-cryptor`
+	`$ cd gd-gamesave-cryptor`
 - Build the Windows binary:
 
-`$ make xcomp_linux_win`
+	`$ make xcomp_linux_win`
 -  The executable is named `gd_crypt.exe`
