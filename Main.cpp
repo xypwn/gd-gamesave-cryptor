@@ -9,40 +9,56 @@
 	const std::string gdLocalFolder = getenv("HOME") + std::string("/.local/share/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/Local Settings/Application Data/GeometryDash/");
 #endif
 
-const std::string usage = R"(Usage:
-	-d: decrypt
-	-e: encrypt
-	-es: encrypt and save to GD folder)";
-
 const std::string saves[2] = {
 	"CCGameManager.dat",
 	"CCLocalLevels.dat",
 };
+
+const std::string commands = R"(Commands:
+    1: Decrypt
+    2: Encrypt
+    3: Encrypt and save to GD folder
+    0: Quit)";
 
 int main(int argc, const char** argv) {
 	std::vector<std::string> args;
 	for(int i = 0; i < argc; i++)
 		args.push_back(argv[i]);
 
-	if(argc < 2)
-	{
-		std::cout << usage << std::endl;
-		exit(1);
-	}
+	bool quit = false;
+	std::string cmd;
 
-	if(args[1] == "-d")
+	while(!quit)
 	{
-		const std::string decrypted = Decrypt(gdLocalFolder + saves[0]);
-		StrToFile(saves[0] + ".xml", decrypted);
-	}
-	else if(args[1] == "-e" || args[1] == "-es")
-	{
-		const std::string encrypted = Encrypt(saves[0] + ".xml");
-		if(args[1] == "-e")
+		std::cout << commands << std::endl;
+		std::cout << ">> ";
+		std::cin >> cmd;
+		if(cmd == "1")
+		{
+			std::cout << "Decrypting..." << std::endl;
+			const std::string decrypted = Decrypt(gdLocalFolder + saves[0]);
+			StrToFile(saves[0] + ".xml", decrypted);
+		}
+		else if(cmd == "2")
+		{
+			std::cout << "Encrypting..." << std::endl;
+			const std::string encrypted = Encrypt(saves[0] + ".xml");
 			StrToFile(saves[0], encrypted);
-		else
+		}
+		else if(cmd == "3")
+		{
+			std::cout << "Encrypting and saving to GD folder..." << std::endl;
+			const std::string encrypted = Encrypt(saves[0] + ".xml");
 			StrToFile(gdLocalFolder + saves[0], encrypted);
+		}
+		else if(cmd == "0")
+		{
+			std::cout << "Quitting" << std::endl;
+			quit = true;
+		}
+		else
+			std::cerr << "Invalid command" << std::endl;
 	}
 
-	exit(0);
+	return(0);
 }
