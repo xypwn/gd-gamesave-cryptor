@@ -7,6 +7,15 @@
 constexpr int CHUNK = 16384;
 constexpr int WINDOW_BITS = 15; 
 
+//Returns true if it was able to open the given file for reading
+bool IsFile(const std::string& filename)
+{
+	std::ifstream file(filename);
+	const bool ret = file.good();
+	file.close();
+	return ret;
+}
+
 //Reads the contents of a given file into a string
 std::string FileToStr(const std::string& filename) {
 	std::ifstream file(filename, std::ios::binary);
@@ -18,11 +27,14 @@ std::string FileToStr(const std::string& filename) {
 }
 
 //Writes the contents of a string to the given file
-void StrToFile(const std::string& filename, const std::string& data) {
-	std::ofstream ofile;
-	ofile.open(filename);
+// returns false if it was unable to open the file
+bool StrToFile(const std::string& filename, const std::string& data) {
+	std::ofstream ofile(filename, std::ios::binary);
+	if(!ofile.good())
+		return false;
 	ofile << data;
 	ofile.close();
+	return true;
 }
 
 //XORs each byte of a string reference

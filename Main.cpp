@@ -20,41 +20,80 @@ const std::string commands = R"(Commands:
     3: Encrypt and save to GD folder
     0: Quit)";
 
+enum class Command
+{
+	Decrypt,
+	Encrypt
+};
+
+bool ExecCommand(Command cmd, const std::string& in_filename, const std::string& out_filename)
+{
+	if(!IsFile(in_filename))
+	{
+		std::cerr << "ERROR: Could not open file " << in_filename << " for reading" << std::endl;
+		return false;
+	}
+	switch(cmd)
+	{
+	case Command::Decrypt:
+		std::cout << "Decrypting " << in_filename << "..." << std::endl;
+		if(!StrToFile(out_filename, Decrypt(in_filename)))
+		{
+			std::cerr << "ERROR: Could not open file " << out_filename << " for writing" << std::endl;
+			return false;
+		}
+		break;
+	case Command::Encrypt:
+		std::cout << "Encrypting " << in_filename << "..." << std::endl;
+		if(!StrToFile(out_filename, Encrypt(in_filename)))
+		{
+			std::cerr << "ERROR: Could not open file " << out_filename << " for writing" << std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
 int main(int argc, const char** argv) {
 	std::vector<std::string> args;
 	for(int i = 0; i < argc; i++)
 		args.push_back(argv[i]);
 
-	bool quit = false;
 	std::string cmd;
 
-	while(!quit)
+	while(true)
 	{
 		std::cout << commands << std::endl;
 		std::cout << ">> ";
 		std::cin >> cmd;
 		if(cmd == "1")
 		{
-			std::cout << "Decrypting..." << std::endl;
-			const std::string decrypted = Decrypt(gdLocalFolder + saves[0]);
-			StrToFile(saves[0] + ".xml", decrypted);
+			for(unsigned int i = 0; i < 2; i++)
+			{
+				if(!ExecCommand(Command::Decrypt, gdLocalFolder + saves[i], saves[i] + ".xml"))
+					continue;
+			}
 		}
 		else if(cmd == "2")
 		{
-			std::cout << "Encrypting..." << std::endl;
-			const std::string encrypted = Encrypt(saves[0] + ".xml");
-			StrToFile(saves[0], encrypted);
+			for(unsigned int i = 0; i < 2; i++)
+			{
+				if(!ExecCommand(Command::Encrypt, saves[i] + ".xml", saves[i]))
+					continue;
+			}
 		}
 		else if(cmd == "3")
 		{
-			std::cout << "Encrypting and saving to GD folder..." << std::endl;
-			const std::string encrypted = Encrypt(saves[0] + ".xml");
-			StrToFile(gdLocalFolder + saves[0], encrypted);
+			for(unsigned int i = 0; i < 2; i++)
+			{
+				if(!ExecCommand(Command::Encrypt, saves[i] + ".xml", gdLocalFolder + saves[i]))
+					continue;
+			}
 		}
 		else if(cmd == "0")
 		{
 			std::cout << "Quitting" << std::endl;
-			quit = true;
+			break;
 		}
 		else
 			std::cerr << "Invalid command" << std::endl;
