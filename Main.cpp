@@ -20,24 +20,27 @@ const std::string commands = R"(Commands:
     3: Encrypt and save to GD folder
     0: Quit)";
 
-enum class Command
-{
+enum class Command {
 	Decrypt,
 	Encrypt
 };
 
-bool ExecCommand(Command cmd, const std::string& in_filename, const std::string& out_filename)
-{
+bool ExecCommand(Command cmd, const std::string& in_filename, const std::string& out_filename) {
+	//Check if input file is valid
 	if(!IsFile(in_filename))
 	{
 		std::cerr << "ERROR: Could not open file " << in_filename << " for reading" << std::endl;
 		return false;
 	}
+	//Read file data into a string
+	std::string data = FileToStr(in_filename);
+
 	switch(cmd)
 	{
 	case Command::Decrypt:
 		std::cout << "Decrypting " << in_filename << "..." << std::endl;
-		if(!StrToFile(out_filename, Decrypt(in_filename)))
+		// Attempt to decrypt data and save it in the given output file
+		if(!StrToFile(out_filename, Decrypt(data, true)))
 		{
 			std::cerr << "ERROR: Could not open file " << out_filename << " for writing" << std::endl;
 			return false;
@@ -45,7 +48,8 @@ bool ExecCommand(Command cmd, const std::string& in_filename, const std::string&
 		break;
 	case Command::Encrypt:
 		std::cout << "Encrypting " << in_filename << "..." << std::endl;
-		if(!StrToFile(out_filename, Encrypt(in_filename)))
+		// Attempt to encrypt data and save it in the given output file
+		if(!StrToFile(out_filename, Encrypt(data, true)))
 		{
 			std::cerr << "ERROR: Could not open file " << out_filename << " for writing" << std::endl;
 			return false;
